@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import ComicVine
+import json
 from PySide import QtGui
 
 ComicVine.set_debug(True)
@@ -12,4 +13,5 @@ ComicVine.set_debug(True)
 # label.show()
 
 # sys.exit( app.exec_() )
-print ComicVine.search_series('Walking Dead')
+results = ComicVine.search_issues('Walking Dead')
+print json.dumps(results, indent=4)
