@@ -3,6 +3,8 @@ import sys
 import ComicVine
 from PySide import QtGui
 
+ComicVine.set_debug(True)
+
 # Create the application object
 # app = QtGui.QApplication(sys.argv)
 
