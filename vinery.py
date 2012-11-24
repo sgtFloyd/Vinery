@@ -1,20 +1,38 @@
 #!/usr/bin/python
 import sys
 import ComicVine
-import json
 from PySide import QtGui
+from PySide.QtCore import Qt
 
 ComicVine.set_debug(True)
 
 # Create the application object
-# app = QtGui.QApplication(sys.argv)
+app = QtGui.QApplication(sys.argv)
 
-# label = QtGui.QLabel("<font color=red size=40>"+ComicVine.search_series('Walking Dead')+"</font>")
-# label.show()
+tree = QtGui.QTreeWidget()
+tree.setWindowTitle("Simple Tree Model")
+tree.header().setVisible(False)
 
-# sys.exit( app.exec_() )
-results = ComicVine.search_series('Walking Dead')
-# results = ComicVine.search_issues('Walking Dead')
-# results = ComicVine.get_series(18166) # Walking Dead
-# results = ComicVine.get_issue(115705) # Walking Dead #3
-print json.dumps(results, indent=4)
+search = ComicVine.Series.search('Walking Dead')
+
+items = []
+for res in search['results']:
+  label = '%s (%s) [%s]' % (res['name'], res['start_year'], res['publisher']['name'])
+
+  item = QtGui.QTreeWidgetItem()
+  item.setText(0, label)
+  item.setData(1, Qt.UserRole, res)
+  items.append(item)
+
+tree.insertTopLevelItems(0, items)
+tree.show()
+
+sys.exit( app.exec_() )
+
+
+# import json
+# results = ComicVine.Series.search('Walking Dead')
+# results = ComicVine.Issue.search('Walking Dead')
+# results = ComicVine.Series.show(18166) # Walking Dead
+# results = ComicVine.Issue.show(115705) # Walking Dead #3
+# print json.dumps(results, indent=4)
