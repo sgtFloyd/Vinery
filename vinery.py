@@ -14,7 +14,7 @@ class SearchTree(QtGui.QTreeWidget):
     self.itemExpanded.connect(self.showSeries)
 
   def showSeries(self, item, column=0):
-    data = item.data(1, Qt.UserRole)
+    data = item.json()
     print data['id']
 
 class SeriesSearchItem(QtGui.QTreeWidgetItem):
@@ -23,9 +23,12 @@ class SeriesSearchItem(QtGui.QTreeWidgetItem):
     label = '%s (%s) [%s]' % (res['name'], res['start_year'], res['publisher']['name'])
     self.setText(0, label)
     self.setData(1, Qt.UserRole, data)
-    self.addChild( self.loadingItem() )
+    self.addChild( self.__loadingItem() )
 
-  def loadingItem(self):
+  def json(self):
+    return self.data(1, Qt.UserRole)
+
+  def __loadingItem(self):
     item = QtGui.QTreeWidgetItem()
     item.setText(0, "Loading...")
     return item
