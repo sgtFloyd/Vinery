@@ -7,9 +7,9 @@ def search(query):
     'resources': 'issue',
     'field_list': ','.join(fields)
   }
-  return API.__search(query, data)
+  return API.search(query, data)
 
 def show(obj_id):
   """ http://api.comicvine.com/documentation/#issue """
   data = {'field_list': ','.join(fields)}
-  return API.__show_object('issue', obj_id, data)
+  return API.show_object('issue', obj_id, data)
