@@ -33,16 +33,11 @@ class SeriesSearchItem(QtGui.QTreeWidgetItem):
     label = '%s (%s) [%s]' % (data['name'], data['start_year'], data['publisher']['name'])
     self.setText(0, label)
     self.setData(1, Qt.UserRole, data)
-    self.addChild(self.__loadingItem())
+    self.addChild(QtGui.QTreeWidgetItem())
     self.loadedIssues = False
 
   def json(self):
     return self.data(1, Qt.UserRole)
-
-  def __loadingItem(self):
-    item = QtGui.QTreeWidgetItem()
-    item.setText(0, "Loading...")
-    return item
 
 class IssueSearchItem(QtGui.QTreeWidgetItem):
   def __init__(self, data):
@@ -56,12 +51,37 @@ class IssueSearchItem(QtGui.QTreeWidgetItem):
   def json(self):
     return self.data(1, Qt.UserRole)
 
+class MainWindow(QtGui.QWidget):
+  def __init__(self):
+    super(MainWindow, self).__init__()
+    layout = QtGui.QGridLayout()
+    layout.addWidget(self.searchGroup(), 0, 0)
+    self.setLayout(layout)
+    self.setWindowTitle("Vinery")
+
+  def searchGroup(self):
+    group = QtGui.QGroupBox('')
+    label = QtGui.QLabel("Search:")
+    search = QtGui.QLineEdit()
+    search.setFocus()
+
+    tree = SearchTree()
+
+    layout = QtGui.QGridLayout()
+    layout.addWidget(label, 0, 0)
+    layout.addWidget(search, 0, 1)
+    layout.addWidget(tree, 1, 0, 2, 2)
+    group.setLayout(layout)
+    return group
+
 # Create the application object
 app = QtGui.QApplication(sys.argv)
+window = MainWindow()
+window.show()
 
-tree = SearchTree()
-tree.loadSearch("Walking Dead")
-tree.show()
+#tree = SearchTree()
+#tree.loadSearch("Walking Dead")
+#tree.show()
 
 sys.exit( app.exec_() )
 
