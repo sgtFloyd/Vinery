@@ -15,6 +15,7 @@ class SearchTree(QtGui.QTreeWidget):
   def loadSearch(self, query):
     search = ComicVine.Series.search(query)
     items = [SeriesSearchItem(result) for result in search['results']]
+    self.clear()
     self.insertTopLevelItems(0, items)
 
 class SeriesSearchItem(QtGui.QTreeWidgetItem):
@@ -24,11 +25,15 @@ class SeriesSearchItem(QtGui.QTreeWidgetItem):
     self.setText(0, label)
     self.setData(1, Qt.UserRole, data)
 
-    publisher = QtGui.QTreeWidgetItem()
-    publisher.setText(0, 'Publisher: %s' % data['publisher']['name'])
-    issues = QtGui.QTreeWidgetItem()
-    issues.setText(0, '%s issues' % data['count_of_issues'])
-    self.addChildren([publisher, issues])
+    if data['publisher'] and data['publisher']['name']:
+      publisher = QtGui.QTreeWidgetItem()
+      publisher.setText(0, 'Publisher: %s' % data['publisher']['name'])
+      self.addChild(publisher)
+
+    if data['count_of_issues']:
+      issues = QtGui.QTreeWidgetItem()
+      issues.setText(0, '%s issues' % data['count_of_issues'])
+      self.addChild(issues)
 
   def json(self):
     return self.data(1, Qt.UserRole)

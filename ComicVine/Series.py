@@ -1,6 +1,6 @@
 import API
 
-fields = ['id', 'name', 'publisher', 'start_year', 'count_of_issues', 'issues']
+fields = ['id', 'name', 'publisher', 'start_year', 'count_of_issues']
 
 def search(query):
   data = {
