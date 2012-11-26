@@ -59,18 +59,26 @@ class MainWindow(QtGui.QWidget):
     self.setLayout(layout)
     self.setWindowTitle("Vinery")
 
+  def doSearch(self):
+    query = self.searchBox.text()
+    if query:
+      self.tree.loadSearch(query)
+
+
   def searchGroup(self):
     group = QtGui.QGroupBox('')
     label = QtGui.QLabel("Search:")
-    search = QtGui.QLineEdit()
-    search.setFocus()
 
-    tree = SearchTree()
+    self.searchBox = QtGui.QLineEdit()
+    self.searchBox.returnPressed.connect(self.doSearch)
+    self.searchBox.setFocus()
+
+    self.tree = SearchTree()
 
     layout = QtGui.QGridLayout()
     layout.addWidget(label, 0, 0)
-    layout.addWidget(search, 0, 1)
-    layout.addWidget(tree, 1, 0, 2, 2)
+    layout.addWidget(self.searchBox, 0, 1)
+    layout.addWidget(self.tree, 1, 0, 2, 2)
     group.setLayout(layout)
     return group
 
