@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import sys
 import ComicVine
 from PySide import QtGui
 from PySide.QtCore import Qt
@@ -71,8 +70,11 @@ class MainWindow(QtGui.QWidget):
     self.setLayout(layout)
     self.setWindowTitle("Vinery")
 
-# Create the application object
-app = QtGui.QApplication(sys.argv)
-window = MainWindow()
-window.show()
-sys.exit( app.exec_() )
+if __name__ == '__main__':
+  import sys
+
+  app = QtGui.QApplication(sys.argv)
+  window = MainWindow()
+  window.setMinimumSize(800, 400)
+  window.show()
+  sys.exit( app.exec_() )
