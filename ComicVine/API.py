@@ -4,6 +4,11 @@ cv_api_url = "http://api.comicvine.com"
 cv_api_key = "f162efb8cc8e7d4291a5df62aaf5b25146a55d7f"
 cv_debug = False
 
+class obj(object):
+  def __init__(self, json):
+    for field in self.fields:
+      setattr(self, field, json[field])
+
 def __get_json(method, data):
   request_url = '%s/%s' % (cv_api_url, method)
   debug('%s, params: %s' % (request_url, data))
