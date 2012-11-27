@@ -17,6 +17,17 @@ class SearchGroup(QtGui.QGroupBox):
     layout.addWidget(self.searchResults, 1, 0, 2, 2)
     self.setLayout(layout)
 
+class SearchBox(QtGui.QLineEdit):
+  def __init__(self, searchResults):
+    super(SearchBox, self).__init__()
+    self.searchResults = searchResults
+    self.returnPressed.connect(self.doSearch)
+
+  def doSearch(self):
+    query = self.text()
+    if query:
+      self.searchResults.load(query)
+
 class SearchTree(QtGui.QTreeWidget):
   def __init__(self, parent=None):
     super(SearchTree, self).__init__(parent)
@@ -30,18 +41,6 @@ class SearchTree(QtGui.QTreeWidget):
       self.clear()
       self.insertTopLevelItems(0, items)
       self.__previousSearch = query
-
-class SearchBox(QtGui.QLineEdit):
-  def __init__(self, searchResults):
-    super(SearchBox, self).__init__()
-    self.searchResults = searchResults
-    self.returnPressed.connect(self.doSearch)
-    self.setFocus()
-
-  def doSearch(self):
-    query = self.text()
-    if query:
-      self.searchResults.load(query)
 
 class SearchResult(QtGui.QTreeWidgetItem):
   def __init__(self, series):
@@ -62,13 +61,60 @@ class SearchResult(QtGui.QTreeWidgetItem):
   def json(self):
     return self.data(1, Qt.UserRole)
 
+class FileGroup(QtGui.QGroupBox):
+  def __init__(self):
+    super(FileGroup, self).__init__('')
+    self.fileTree = FileTree()
+    self.filePathBox = FilePathBox(self.fileTree)
+    self.browseButton = FileBrowse(self.filePathBox)
+
+    layout = QtGui.QGridLayout()
+    layout.addWidget(self.browseButton, 0, 0)
+    layout.addWidget(self.filePathBox, 0, 1)
+    layout.addWidget(self.fileTree, 1, 0, 2, 2)
+    self.setLayout(layout)
+
+class FileBrowse(QtGui.QPushButton):
+  def __init__(self, filePathBox):
+    super(FileBrowse, self).__init__('Browse')
+    self.filePathBox = filePathBox
+    self.clicked.connect(self.filePathBox.browseDirectory)
+
+class FilePathBox(QtGui.QLineEdit):
+  def __init__(self, fileTree):
+    super(FilePathBox, self).__init__()
+    self.fileTree = fileTree
+    self.returnPressed.connect(self.openPath)
+
+  def browseDirectory(self):
+    options = QtGui.QFileDialog.ShowDirsOnly
+    directory = QtGui.QFileDialog.getExistingDirectory(self, "Browse", self.text(), options)
+    if directory:
+      self.setText(directory)
+      self.openPath()
+
+  def openPath(self):
+    path = self.text()
+    if path:
+      self.fileTree.load(path)
+
+class FileTree(QtGui.QTreeWidget):
+  def __init__(self, parent=None):
+    super(FileTree, self).__init__(parent)
+    self.header().setVisible(False)
+
+  def load(self, path):
+    print "opening: %s" % path
+
 class MainWindow(QtGui.QWidget):
   def __init__(self):
     super(MainWindow, self).__init__()
+    self.setWindowTitle("Vinery")
+
     layout = QtGui.QGridLayout()
     layout.addWidget(SearchGroup(), 0, 0)
+    layout.addWidget(FileGroup(), 0, 1)
     self.setLayout(layout)
-    self.setWindowTitle("Vinery")
 
 if __name__ == '__main__':
   import sys
