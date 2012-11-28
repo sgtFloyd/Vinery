@@ -7,7 +7,8 @@ cv_debug = False
 class obj(object):
   def __init__(self, json):
     for field in self.fields:
-      setattr(self, field, json[field])
+      value = json[field] if (json and field in json) else None
+      setattr(self, field, value)
 
 def __get_json(method, data):
   request_url = '%s/%s' % (cv_api_url, method)

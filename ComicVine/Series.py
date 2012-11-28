@@ -22,7 +22,18 @@ class Series(API.obj):
     super(Series, self).__setattr__(name, value)
 
   def label(self):
-    return '%s (%s)' % (self.name, self.start_year)
+    return '%s (%s)' % (self.name.strip(), self.start_year)
+
+  def description(self):
+    desc = []
+    if self.count_of_issues:
+      count = "%s issue" % self.count_of_issues
+      if self.count_of_issues != 1:
+        count += 's'
+      desc.append(count)
+    if self.publisher and self.publisher.name:
+      desc.append("Publisher: %s" % self.publisher.name.strip())
+    return ', '.join(desc)
 
 class Publisher(API.obj):
   fields = ['id', 'name']

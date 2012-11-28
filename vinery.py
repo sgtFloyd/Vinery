@@ -46,21 +46,12 @@ class SearchTree(QtGui.QTreeWidget):
 class SearchResult(QtGui.QTreeWidgetItem):
   def __init__(self, series):
     super(SearchResult, self).__init__()
+    self.series = series
     self.setText(0, series.label())
-    self.setData(1, Qt.UserRole, series)
 
-    if series.publisher and series.publisher.name:
-      publisher = QtGui.QTreeWidgetItem()
-      publisher.setText(0, 'Publisher: %s' % series.publisher.name)
-      self.addChild(publisher)
-
-    if series.count_of_issues:
-      issues = QtGui.QTreeWidgetItem()
-      issues.setText(0, '%s issues' % series.count_of_issues)
-      self.addChild(issues)
-
-  def json(self):
-    return self.data(1, Qt.UserRole)
+    desc = QtGui.QTreeWidgetItem()
+    desc.setText(0, series.description())
+    self.addChild(desc)
 
 class FileGroup(QtGui.QGroupBox):
   def __init__(self):
