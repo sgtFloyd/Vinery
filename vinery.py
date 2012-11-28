@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import ComicVine
 from PySide import QtGui
 from PySide.QtCore import Qt
@@ -104,7 +105,17 @@ class FileTree(QtGui.QTreeWidget):
     self.header().setVisible(False)
 
   def load(self, path):
-    print "opening: %s" % path
+    items = [FileEntry(path, fname) for fname in os.listdir(path)]
+    self.insertTopLevelItems(0, items)
+
+class FileEntry(QtGui.QTreeWidgetItem):
+  def __init__(self, path, filename):
+    super(FileEntry, self).__init__()
+    self.path = path
+    self.filename = filename
+    self.setText(0, filename)
+    if os.path.isdir(os.path.join(path, filename)):
+      self.addChild(QtGui.QTreeWidgetItem())
 
 class MainWindow(QtGui.QWidget):
   def __init__(self):
