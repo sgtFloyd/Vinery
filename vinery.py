@@ -94,19 +94,30 @@ class FileTree(QtGui.QTreeWidget):
   def __init__(self, parent=None):
     super(FileTree, self).__init__(parent)
     self.header().setVisible(False)
+    self.itemExpanded.connect(self.openDirectory)
 
   def load(self, path):
     items = [FileEntry(path, fname) for fname in os.listdir(path)]
     self.insertTopLevelItems(0, items)
 
+  def openDirectory(self, item, column=0):
+    item.expand()
+
 class FileEntry(QtGui.QTreeWidgetItem):
   def __init__(self, path, filename):
     super(FileEntry, self).__init__()
-    self.path = path
     self.filename = filename
+    self.fullPath = os.path.join(path, filename)
+    self.isDirectory = os.path.isdir(self.fullPath)
+
     self.setText(0, filename)
-    if os.path.isdir(os.path.join(path, filename)):
+    if self.isDirectory:
       self.addChild(QtGui.QTreeWidgetItem())
+
+  def expand(self):
+    items = [FileEntry(self.fullPath, fname) for fname in os.listdir(self.fullPath)]
+    self.takeChildren()
+    self.addChildren(items)
 
 class MainWindow(QtGui.QWidget):
   def __init__(self):
