@@ -1,5 +1,5 @@
 import os
-import ComicVine
+import lib.ComicVine
 from PySide import QtGui
 from PySide.QtCore import Qt
 
@@ -34,7 +34,7 @@ class SearchTree(QtGui.QTreeWidget):
 
   def load(self, query):
     if self.__previousSearch != query:
-      search = ComicVine.Series.search(query)
+      search = lib.ComicVine.Series.search(query)
       items = [SearchResult(obj) for obj in search]
       self.clear()
       self.insertTopLevelItems(0, items)
