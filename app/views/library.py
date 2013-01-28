@@ -1,6 +1,12 @@
 import os
 from PySide import QtGui
 
+def listDir(path):
+  return sorted(os.listdir(path), key=lambda fname:
+    # sort directories before files
+    (not os.path.isdir(os.path.join(path, fname)), fname)
+  )
+
 class LibraryView(QtGui.QWidget):
   def __init__(self):
     super(LibraryView, self).__init__()
@@ -27,13 +33,12 @@ class FilePathBox(QtGui.QLineEdit):
     options = QtGui.QFileDialog.ShowDirsOnly
     directory = QtGui.QFileDialog.getExistingDirectory(self, 'Open', self.text(), options)
     if directory:
-      self.path = directory
       self.setText(directory)
       self.openPath()
 
   def openPath(self):
-    if self.path:
-      self.libraryTree.load(self.path)
+    if self.text():
+      self.libraryTree.load(self.text())
 
 class OpenButton(QtGui.QPushButton):
   def __init__(self, filePathBox):
@@ -48,7 +53,7 @@ class LibraryTree(QtGui.QTreeWidget):
     self.itemExpanded.connect(self.openDirectory)
 
   def load(self, path):
-    items = [FileEntry(path, fname) for fname in os.listdir(path)]
+    items = [FileEntry(path, fname) for fname in listDir(path)]
     self.insertTopLevelItems(0, items)
 
   def openDirectory(self, item, column=0):
@@ -66,6 +71,6 @@ class FileEntry(QtGui.QTreeWidgetItem):
       self.addChild(QtGui.QTreeWidgetItem())
 
   def expand(self):
-    items = [FileEntry(self.fullPath, fname) for fname in os.listdir(self.fullPath)]
+    items = [FileEntry(self.fullPath, fname) for fname in listDir(self.fullPath)]
     self.takeChildren()
     self.addChildren(items)
